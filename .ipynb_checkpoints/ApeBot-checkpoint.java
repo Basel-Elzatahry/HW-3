@@ -1,9 +1,9 @@
 
-/** our first trial bot.
+/** A mimicry-based Rock-Paper-Scissors player.
   * 
-  * @author B&B
+  * @author RR
   */
-public class BotOne implements RoShamBot {
+public class ApeBot implements RoShamBot {
     
     /** Returns the same action as the opponent's previous action.
       * 
