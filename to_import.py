@@ -25,7 +25,7 @@ import pylab as py
 """
 
 def visualize(train_dir):
-    classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 
+    classes = ['a', 'b', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 
            'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 
            'W', 'X', 'Y', 'Z', 'space', 'nothing', 'del']
     plt.figure(figsize=(15, 15))
@@ -33,7 +33,7 @@ def visualize(train_dir):
         plt.subplot(8,8,i+1)
         plt.xticks([])
         plt.yticks([])
-        path = train_dir + classes[i]+"/"+classes[i] +"_1_rotate_2.jpeg"
+        path = train_dir + classes[i].upper()+"/"+classes[i] +"_1_rotate_1.jpeg"
         img = plt.imread(path)
         plt.imshow(img)
         plt.xlabel(classes[i])
@@ -56,13 +56,13 @@ def visualize(train_dir):
 def split_data(train_dir):
     images = []
     labels = []
-    size = 64,64
+    size = 64*64
     index = -1
     for folder in os.listdir(train_dir):
         index +=1
         for image in os.listdir(train_dir + "/" + folder):
             temp_img = cv2.imread(train_dir + '/' + folder + '/' + image)
-            
+            #temp_img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
             if type(temp_img) is np.ndarray:
                 temp_img = cv2.resize(temp_img, size)
                 images.append(temp_img)
@@ -71,10 +71,10 @@ def split_data(train_dir):
     images = images.astype('float32')/255.0
     labels = utils.to_categorical(labels)
     x_train, x_test, y_train, y_test = train_test_split(images, labels, test_size = 0.1)
-    np.save("x2_train.npy",x_train)
-    np.save("x2_test.npy",x_test)
-    np.save("y2_train.npy",y_train)
-    np.save("y2_test.npy",y_test)
+    np.save("x_train.npy",x_train)
+    np.save("x_test.npy",x_test)
+    np.save("y_train.npy",y_train)
+    np.save("y_test.npy",y_test)
     
 #     print('Loaded', len(x_train),'images for training,','Train data shape =', x_train.shape)
 #     print('Loaded', len(x_test),'images for testing','Test data shape =', x_test.shape)
@@ -154,113 +154,6 @@ def accPlotter(history):
     py.plot(loss,label='training',color='red')
     py.plot(val_loss,label='validation',color='blue')
     py.legend()
-
-def modelArch():
-    model = Sequential()
-    model.add(Conv2D(16 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(16 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-
-    model.add(Conv2D(32 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(32 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Dropout(0.4))
-
-    model.add(Conv2D(64 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(64 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-
-    model.add(Conv2D(128 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(128 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Dropout(0.4))
-
-    model.add(Conv2D(256 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-
-    model.add(Conv2D(256 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Dropout(0.4))
-
-    model.add(Flatten())
-    model.add(Dense(256 , activation = 'relu'))
-    model.add(Dense(128 , activation = 'relu'))
-    model.add(Dense(29 , activation = 'softmax'))
-
-    return model
-
-
-def modelArch_less():
-    model = Sequential()
-    model.add(Conv2D(16 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(16 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-
-    model.add(Conv2D(32 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(32 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Dropout(0.4))
-
-    model.add(Conv2D(64 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(64 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-
-    model.add(Dropout(0.4))
-    model.add(Flatten())
-#     model.add(Dense(256 , activation = 'relu'))
-#     model.add(Dense(128 , activation = 'relu'))
-    model.add(Dense(29 , activation = 'softmax'))
-
-    return model
-
-def modelArch_less2():
-    model = Sequential()
-    model.add(Conv2D(16 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(16 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Dropout(0.4))
-
-    model.add(Conv2D(32 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-    model.add(Conv2D(32 , (3,3) , strides = 1 , padding = 'same' , activation = 'relu' , input_shape = (64,64,3)))
-    model.add(BatchNormalization())
-    model.add(MaxPool2D((2,2) , strides = 2 , padding = 'same'))
-
-
-    model.add(Dropout(0.4))
-    model.add(Flatten())
-#     model.add(Dense(256 , activation = 'relu'))
-#     model.add(Dense(128 , activation = 'relu'))
-    model.add(Dense(29 , activation = 'softmax'))
-
-    return model
 
 def map_index_to_letter(index,train_dir):
     folder = os.listdir(train_dir)[index]
