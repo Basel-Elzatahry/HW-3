@@ -200,7 +200,7 @@ class cgpann(object):
         return funcVal
 
     @staticmethod
-    def logicFunc(connections,funcVal,array1):
+    def logicFunc(connections,funcVal=1,array1):
         '''
         Parameters
         ----------
@@ -359,3 +359,13 @@ class cgpann(object):
         array of test data
         '''
         return self.evaluateGeneral(x,self.GenoPrediction)
+    
+    def binary_cross(self, y, y_pred):
+        '''
+        Parameters
+        ..........
+        y : actual output
+        y_pred : predicted output
+        '''
+        
+        return -(y*np.log(y_pred))/y.shape[0]
